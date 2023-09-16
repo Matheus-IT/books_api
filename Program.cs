@@ -35,6 +35,12 @@ app.MapGet("book/{id}", (int id) => {
     return Results.Ok(book);
 });
 
+app.MapPost("book/", (Book book) =>
+{
+    books.Add(book);
+    return books;
+});
+
 app.Run();
 
 
