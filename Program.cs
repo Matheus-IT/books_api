@@ -41,6 +41,25 @@ app.MapPost("book/", (Book book) =>
     return books;
 });
 
+app.MapPut("book/{id}", (Book updatedBook, int id) =>
+{
+    var book = books.Find(b => b.Id == id);
+    if (book is null)
+        return Results.NotFound("The book doesn't exist");
+    book.Title = updatedBook.Title;
+    book.Author = updatedBook.Author;
+    return Results.Ok(book);
+});
+
+app.MapDelete("book/{id}", (int id) =>
+{
+    var book = books.Find(b => b.Id == id);
+    if (book is null)
+        return Results.NotFound("The book doesn't exist");
+    books.Remove(book);
+    return Results.Ok(book);
+});
+
 app.Run();
 
 
