@@ -27,16 +27,12 @@ var books = new List<Book>
     new Book{Id=3, Title="The martian", Author="Andy"},
 };
 
-app.MapGet("book/", () =>
-{
-    return books;
-});
+app.MapGet("book/", async (DataContext context) => await context.Books.ToListAsync());
 
-app.MapGet("book/{id}", (int id) => {  
-    var book = books.Find(b => b.Id == id);
-    if (book is null)
-        return Results.NotFound("The book doesn't exist");
-    return Results.Ok(book);
+app.MapGet("book/{id}", async (DataContext context, int id) => {  
+    return await context.Books.FindAsync(id) is Book book ?
+        Results.Ok(book) : 
+        Results.NotFound("The book doesn't exist");
 });
 
 app.MapPost("book/", (Book book) =>
