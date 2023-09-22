@@ -55,13 +55,16 @@ app.MapPut("book/{id}", async (DataContext context, Book updatedBook, int id) =>
     return Results.Ok(await context.Books.ToListAsync());
 });
 
-app.MapDelete("book/{id}", (int id) =>
+app.MapDelete("book/{id}", async (DataContext context, int id) =>
 {
-    var book = books.Find(b => b.Id == id);
+    var book = await context.Books.FindAsync(id);
     if (book is null)
         return Results.NotFound("The book doesn't exist");
-    books.Remove(book);
-    return Results.Ok(book);
+
+    context.Books.Remove(book);
+    await context.SaveChangesAsync();
+    
+    return Results.Ok(await context.Books.ToListAsync());
 });
 
 app.Run();
