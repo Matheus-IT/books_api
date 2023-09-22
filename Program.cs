@@ -35,10 +35,11 @@ app.MapGet("book/{id}", async (DataContext context, int id) => {
         Results.NotFound("The book doesn't exist");
 });
 
-app.MapPost("book/", (Book book) =>
+app.MapPost("/book", async (DataContext context, Book book) =>
 {
-    books.Add(book);
-    return books;
+    context.Books.Add(book);
+    await context.SaveChangesAsync();
+    return Results.Ok(await context.Books.ToListAsync());
 });
 
 app.MapPut("book/{id}", (Book updatedBook, int id) =>
